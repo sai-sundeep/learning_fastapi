@@ -58,11 +58,24 @@ class Books:
 
 
 class BookCreateRequest(BaseModel):
-    id: Optional[int] = None
+    id: Optional[int] = Field(description="ID not required wile creation", default=None)
     title: str = Field(min_length=3)
     author: str = Field(min_length=1)
     description: str = Field(min_length=5, max_length=100)
     rating: int = Field(ge=1, le=5)
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "title": "Round Atlas",
+                    "author": "Kevin Plum",
+                    "description": "Excellent Novel",
+                    "rating": 5
+                }
+            ]
+        }
+    }
 
 
 BOOKS = [
@@ -76,7 +89,7 @@ BOOKS = [
 
 
 def calc_book_id(book: Books):
-    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1]["id"] +1
+    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1]["id"] + 1
     return book
 
 
