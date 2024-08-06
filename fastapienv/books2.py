@@ -48,13 +48,15 @@ class Books:
     author: str
     description: str
     rating: int
+    published_date: int
 
-    def __init__(self, id, title, author, description, rating):
+    def __init__(self, id, title, author, description, rating, published_date):
         self.id = id
         self.title = title
         self.author = author
         self.description = description
         self.rating = rating
+        self.published_date = published_date
 
 
 class BookCreateRequest(BaseModel):
@@ -63,7 +65,7 @@ class BookCreateRequest(BaseModel):
     author: str = Field(min_length=1)
     description: str = Field(min_length=5, max_length=100)
     rating: int = Field(ge=1, le=5)
-    published_date: int = Field(gt=1900, lt=2025)
+    published_date: int = Field(gt=1990, lt=2025)
 
     model_config = {
         "json_schema_extra": {
@@ -95,6 +97,10 @@ def calc_book_id(book: Books):
     return book
 
 
+@app.get("/")
+async def get_books():
+    return "Welcome to Books API Application!"
+
 @app.get("/books")
 async def get_books():
     return BOOKS
@@ -115,18 +121,18 @@ async def read_books_by_rating(book_rating: int):
     return result_books
 
 
-@app.get("/books/update_book")
+@app.put("/books/update_book")
 async def update_book_by_id(book: BookCreateRequest):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book.id:
             BOOKS[i] = book
             break
 
-@app.get("/books/published_date/{pub_date}")
-async def read_book_by_published_date(pub_date: int):
+@app.get("/books/published_date/")
+async def read_books_by_published_date(published_date: int):
     result_books = []
     for book in BOOKS:
-        if book.get("publication_date") == pub_date:
+        if book.get("published_date") == published_date:
             result_books.append(book)
     return result_books
 
