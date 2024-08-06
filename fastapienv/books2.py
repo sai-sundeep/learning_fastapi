@@ -92,11 +92,6 @@ BOOKS = [
 ]
 
 
-def calc_book_id(book: Books):
-    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1]["id"] + 1
-    return book
-
-
 @app.get("/")
 async def get_books():
     return "Welcome to Books API Application!"
@@ -121,20 +116,14 @@ async def read_books_by_rating(book_rating: int):
     return result_books
 
 
-@app.put("/books/update_book")
-async def update_book_by_id(book: BookCreateRequest):
-    for i in range(len(BOOKS)):
-        if BOOKS[i].id == book.id:
-            BOOKS[i] = book
-            break
-
-@app.get("/books/published_date/")
+@app.get("/books/publish/")
 async def read_books_by_published_date(published_date: int):
     result_books = []
     for book in BOOKS:
         if book.get("published_date") == published_date:
             result_books.append(book)
     return result_books
+
 
 @app.delete("/books/{book_id}")
 async def delete_a_book(book_id: int):
@@ -144,7 +133,21 @@ async def delete_a_book(book_id: int):
             break
 
 
+def calc_book_id(book: Books):
+    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1]["id"] + 1
+    return book
+
+
 @app.post("/create_book")
 async def add_a_book(incoming_book: BookCreateRequest):
     new_book = Books(**incoming_book.model_dump())
     BOOKS.append(calc_book_id(new_book))
+
+
+@app.put("/books/update_book")
+async def update_book_by_id(book: BookCreateRequest):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get("id") == book.id:
+            print(book.model_dump())
+            BOOKS[i] = book.model_dump()
+            break
