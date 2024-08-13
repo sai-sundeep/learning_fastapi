@@ -130,14 +130,14 @@ async def read_books_by_published_date(published_date: int = Query(gt=1990, lt=2
     return result_books
 
 
-def calc_book_id(book: Books):
-    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1]["id"] + 1
+def calc_book_id(book: Book):
+    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
     return book
 
 
 @app.post("/create_book", status_code=status.HTTP_201_CREATED)
 async def add_a_book(incoming_book: BookCreateRequest):
-    new_book = Books(**incoming_book.model_dump())
+    new_book = Book(**incoming_book.model_dump())
     BOOKS.append(calc_book_id(new_book))
 
 
@@ -154,11 +154,11 @@ async def update_book_by_id(book: BookCreateRequest):
         raise HTTPException(status_code=404, detail="Item not found!")
 
 
-@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_a_book(book_id: int = Path(gt=0)):
+@app.delete("/books/{book_id_to_delete}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_a_book(book_id_to_delete: int = Path(gt=0)):
     book_deleted = False
     for i in range(len(BOOKS)):
-        if BOOKS[i].id == book_id:
+        if BOOKS[i].id == book_id_to_delete:
             BOOKS.pop(i)
             book_deleted = True
             break
