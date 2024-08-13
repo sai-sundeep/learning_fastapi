@@ -38,7 +38,7 @@ Contact:
 
 from fastapi import FastAPI, Body
 from fastapi import Path, Query, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 from starlette import status
 
@@ -69,9 +69,23 @@ class BookCreateRequest(BaseModel):
     rating: int = Field(ge=1, le=5)
     published_date: int = Field(gt=1990, lt=2025)
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
+    # model_config = {
+    #     "json_schema_extra": {
+    #         "examples": [
+    #             {
+    #                 "title": "Round Atlas",
+    #                 "author": "Kevin Plum",
+    #                 "description": "Excellent Novel",
+    #                 "rating": 5,
+    #                 "published_date": 2023
+    #             }
+    #         ]
+    #     }
+    # }
+
+    model_config = ConfigDict(
+        json_schema_extra= {
+            "examples" : [
                 {
                     "title": "Round Atlas",
                     "author": "Kevin Plum",
@@ -81,7 +95,7 @@ class BookCreateRequest(BaseModel):
                 }
             ]
         }
-    }
+    )
 
 
 BOOKS = [
@@ -116,7 +130,7 @@ async def read_book_by_id(book_id: int = Path(gt=0)):
 async def read_books_by_rating(book_rating: int = Query(ge=1, le=5)):
     result_books = []
     for book in BOOKS:
-        if book.get("rating") == book_rating:
+        if book.rating == book_rating:
             result_books.append(book)
     return result_books
 
@@ -125,7 +139,7 @@ async def read_books_by_rating(book_rating: int = Query(ge=1, le=5)):
 async def read_books_by_published_date(published_date: int = Query(gt=1990, lt=2025)):
     result_books = []
     for book in BOOKS:
-        if book.get("published_date") == published_date:
+        if book.published_date == published_date:
             result_books.append(book)
     return result_books
 
