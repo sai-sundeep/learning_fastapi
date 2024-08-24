@@ -4,6 +4,7 @@
 fastapienv/Scripts/*.ps1
 fastapienv/Scripts/activate
 *.cfg
+*.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

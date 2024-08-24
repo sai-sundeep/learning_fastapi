@@ -42,14 +42,8 @@ from sqlalchemy import Column, String, Integer, Boolean
 
 class Todos(Base):
     __tablename__ = "todos"
-
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String),
-    description = Column(String),
-    priority = Column(Integer),
+    title = Column(String)
+    description = Column(String)
+    priority = Column(Integer)
     complete = Column(Boolean, default=False)
-
-    def __repr__(self) -> str:
-        return (f"Todos(id={self.id!r}, "
-                f"title={self.title!r}, description={self.description!r}, "
-                f"priority={self.priority!r}, complete={self.complete!r})")
